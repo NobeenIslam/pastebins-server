@@ -3,6 +3,7 @@ import { config } from "dotenv";
 import express from "express";
 import cors from "cors";
 import filePath from "./filepath";
+import { pasteInterface } from "./pasteInterface";
 
 config(); //Read .env file lines as though they were env vars.
 
@@ -43,7 +44,7 @@ app.get("/pastes", async (req, res) => {
 
 });
 
-app.get("/pastes/:id", async (req, res) => {
+app.get<{id: string},{},{}>("/pastes/:id", async (req, res) => {
   const id = parseInt(req.params.id)
   const selectQueryId = `
   SELECT * from pastebins
@@ -57,7 +58,7 @@ app.get("/pastes/:id", async (req, res) => {
   }
 });
 
-app.post<{},{},{title: string|null, text:string}>("/pastes", async (req,res) => {
+app.post<{},{},pasteInterface>("/pastes", async (req,res) => {
   let {title, text} = req.body;
   if (text){
     if (title === ""){
@@ -75,8 +76,16 @@ app.post<{},{},{title: string|null, text:string}>("/pastes", async (req,res) => 
   }
 })
 
+app.put<{id: string},{},pasteInterface>("/pastes/:id", async (req,res) => {
+  try {
+    const id = parseInt(req.params.id)
+    const {title, text} = req.body
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
 
-app.delete("/pastes/:id", async (req, res) => {
+app.delete<{id: string},{},{}>("/pastes/:id", async (req, res) => {
   const id = parseInt(req.params.id)
   try {
     const query = `DELETE FROM pastebins WHERE id = $1 RETURNING *`
