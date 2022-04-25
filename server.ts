@@ -34,7 +34,6 @@ app.get("/", async (req, res) => {
 });
 
 app.get("/pastes", async (req, res) => {
-
   try {
     const dbres = await client.query('select * from pastebins');
     res.status(200).json(dbres.rows);
@@ -50,16 +49,57 @@ app.get("/pastes/:id", async (req, res) => {
   SELECT * from pastebins
   WHERE id = $1
   `
-
   try {
     const dbres = await client.query(selectQueryId, [id]);
     res.status(200).json(dbres.rows);
   } catch (error) {
     console.log(error)
   }
-
 });
 
+app.post<{},{},{title: string|null, text:string}>("/pastes", async (req,res) => {
+  let {title, text} = req.body;
+  if (text){
+    if (title === ""){
+      title = null
+    }
+    const postquery = `INSERT INTO pastebins (title, text) VALUES ($1, $2)`
+    const postedQuery = await client.query(postquery, [title, text])
+    res.status(200).json( 
+      {status: "success",
+      data: {
+        info: postedQuery.rows,
+      }})
+  } else {
+    res.status(500).send("Error 500: No paste text detected")
+  }
+})
+
+
+app.delete("/pastes/:id", async (req, res) => {
+  const id = parseInt(req.params.id)
+  try {
+    const query = `DELETE FROM pastebins WHERE id = $1 RETURNING *`
+    const deleteRes = await client.query(query, [id])
+    const didRemove = deleteRes.rowCount === 1;
+
+    if (didRemove) {
+      res.status(200).json({
+        success: true,
+        deleted: deleteRes.rows
+      })
+    } else {
+      res.status(404).json({
+        status: false,
+        data: {
+          id: "Could not find a paste with that id",
+        },
+      });
+    }
+  } catch (error) {
+    res.status(400).send(error)
+  }
+})
 
 //Start the server on the given port
 const port = process.env.PORT;
