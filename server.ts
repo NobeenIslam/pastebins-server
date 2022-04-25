@@ -79,7 +79,34 @@ app.post<{},{},pasteInterface>("/pastes", async (req,res) => {
 app.put<{id: string},{},pasteInterface>("/pastes/:id", async (req,res) => {
   try {
     const id = parseInt(req.params.id)
-    const {title, text} = req.body
+    let {text, title} = req.body
+    if (!text){
+      res.status(500).send("Error 500: No paste text detected")
+    }else if (title === "" || !title){
+      title = null
+    }
+    const query = `
+      UPDATE pastebins
+      SET text = $1, title = $2
+      WHERE id = $3
+      RETURNING *
+      `
+    const updateResponse = await client.query(query, [text, title, id])
+    const didUpdate = updateResponse.rowCount === 1;
+
+    if (didUpdate) {
+      res.status(200).json({
+        success: true,
+        updated: updateResponse.rows
+      })
+    } else {
+      res.status(404).json({
+        status: false,
+        data: {
+          id: "Could not find a paste with that id",
+        },
+      });
+    }
   } catch (error) {
     res.status(400).send(error)
   }
