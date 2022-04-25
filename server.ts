@@ -33,14 +33,29 @@ app.get("/", async (req, res) => {
   res.sendFile(pathToFile);
 });
 
-app.get("/firstrow", async (req, res) => {
+app.get("/pastes", async (req, res) => {
 
   try {
     const dbres = await client.query('select * from pastebins');
     res.status(200).json(dbres.rows);
   } catch (error) {
-    //res.status(400).send(error)
-    console.log(error.stack)
+    console.log(error)
+  }
+
+});
+
+app.get("/pastes/:id", async (req, res) => {
+  const id = parseInt(req.params.id)
+  const selectQueryId = `
+  SELECT * from pastebins
+  WHERE id = $1
+  `
+
+  try {
+    const dbres = await client.query(selectQueryId, [id]);
+    res.status(200).json(dbres.rows);
+  } catch (error) {
+    console.log(error)
   }
 
 });
