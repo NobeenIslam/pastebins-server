@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>My server API</title>
+</head>
+
+<body>
+    <header>
+        <h1>My server API</h1>
+        <h2>RESTful JSON API</h2>
+    </header>
+    <main>
+        <section>
+            <h3>Retrieve all items</h3>
+            <p><code>GET /tasks</code></p>
+        </section>
+        <section>
+            <h3>Create a item</h3>
+            <p><code>POST /tasks</code></p>
+        </section>
+        <section>
+            <h3>Retrieve a specific item</h3>
+            <p><code>GET /tasks/{id}</code></p>
+        </section>
+        <section>
+            <h3>Update a specific item</h3>
+            <p><code>PATCH /tasks/{id}</code></p>
+            <p>Attaching a JSON body with the possible below fields:</p>
+            <ul>
+                <li><code>taskName</code> (string)</li>
+            </ul>
+        </section>
+        <section>
+            <h3>Delete a specific item</h3>
+            <p><code>DELETE /tasks/{id}</code></p>
+        </section>
+    </main>
+</body>
+
+</html>
