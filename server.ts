@@ -36,7 +36,7 @@ app.get("/", async (req, res) => {
 
 app.get("/pastes", async (req, res) => {
   try {
-    const dbres = await client.query('select * from pastebins');
+    const dbres = await client.query('select * from pastebins ORDER BY creationdate DESC ');
     res.status(200).json(dbres.rows);
   } catch (error) {
     console.log(error)
@@ -44,7 +44,7 @@ app.get("/pastes", async (req, res) => {
 
 });
 
-app.get<{id: string},{},{}>("/pastes/:id", async (req, res) => {
+app.get<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
   const id = parseInt(req.params.id)
   const selectQueryId = `
   SELECT * from pastebins
@@ -58,31 +58,33 @@ app.get<{id: string},{},{}>("/pastes/:id", async (req, res) => {
   }
 });
 
-app.post<{},{},pasteInterface>("/pastes", async (req,res) => {
-  let {title, text} = req.body;
-  if (text){
-    if (title === ""){
+app.post<{}, {}, pasteInterface>("/pastes", async (req, res) => {
+  let { title, text } = req.body;
+  if (text) {
+    if (title === "") {
       title = null
     }
-    const postquery = `INSERT INTO pastebins (title, text) VALUES ($1, $2)`
+    const postquery = `INSERT INTO pastebins (title, text) VALUES ($1, $2) RETURNING *`
     const postedQuery = await client.query(postquery, [title, text])
-    res.status(200).json( 
-      {status: "success",
-      data: {
-        info: postedQuery.rows,
-      }})
+    res.status(200).json(
+      {
+        status: "success",
+        data: {
+          info: postedQuery.rows,
+        }
+      })
   } else {
     res.status(500).send("Error 500: No paste text detected")
   }
 })
 
-app.put<{id: string},{},pasteInterface>("/pastes/:id", async (req,res) => {
+app.put<{ id: string }, {}, pasteInterface>("/pastes/:id", async (req, res) => {
   try {
     const id = parseInt(req.params.id)
-    let {text, title} = req.body
-    if (!text){
+    let { text, title } = req.body
+    if (!text) {
       res.status(500).send("Error 500: No paste text detected")
-    }else if (title === "" || !title){
+    } else if (title === "" || !title) {
       title = null
     }
     const query = `
@@ -112,7 +114,7 @@ app.put<{id: string},{},pasteInterface>("/pastes/:id", async (req,res) => {
   }
 })
 
-app.delete<{id: string},{},{}>("/pastes/:id", async (req, res) => {
+app.delete<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
   const id = parseInt(req.params.id)
   try {
     const query = `DELETE FROM pastebins WHERE id = $1 RETURNING *`
