@@ -2,7 +2,7 @@
 <html lang="en">
 
 <head>
-    <title>My server API</title>
+    <title>Pastebins Server</title>
 </head>
 
 <body>
@@ -12,28 +12,28 @@
     </header>
     <main>
         <section>
-            <h3>Retrieve all items</h3>
-            <p><code>GET /tasks</code></p>
+            <h3>Retrieve all pastes</h3>
+            <p><code>GET /pastes</code></p>
         </section>
         <section>
             <h3>Create a item</h3>
-            <p><code>POST /tasks</code></p>
+            <p><code>POST /pastes</code></p>
         </section>
         <section>
             <h3>Retrieve a specific item</h3>
-            <p><code>GET /tasks/{id}</code></p>
+            <p><code>GET /pastes/{id}</code></p>
         </section>
         <section>
             <h3>Update a specific item</h3>
-            <p><code>PATCH /tasks/{id}</code></p>
+            <p><code>PATCH /pastes/{id}</code></p>
             <p>Attaching a JSON body with the possible below fields:</p>
             <ul>
-                <li><code>taskName</code> (string)</li>
+                <li><code>pastes</code> (string)</li>
             </ul>
         </section>
         <section>
-            <h3>Delete a specific item</h3>
-            <p><code>DELETE /tasks/{id}</code></p>
+            <h3>Delete a specific paste</h3>
+            <p><code>DELETE /pastes/{id}</code></p>
         </section>
     </main>
 </body>
