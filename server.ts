@@ -30,8 +30,9 @@ const client = new Client(dbConfig);
 client.connect();
 
 app.get("/", async (req, res) => {
-  //const pathToFile = filePath("./public/index.html");
-  res.status(200).send("This is the home page")
+  const pathToFile = filePath("../public/index.html");
+  res.sendFile(pathToFile);
+  //res.status(200).send("This is the home page")
 });
 
 app.get("/pastes", async (req, res) => {
