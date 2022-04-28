@@ -139,11 +139,16 @@ app.delete<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
   }
 })
 
-app.get("/pastes/:pasteId/comments", (req,res) => {
+app.get<{id: string}>("/pastes/:id/comments", async (req,res) => {
+  const id = parseInt(req.params.id)
   try {
+    const query = 'SELECT * FROM comments WHERE paste_id= $1'
+    const queryRes = await client.query(query, [id])
+
+    res.status(200).json(queryRes.rows)
     
   } catch (error) {
-    
+    res.status(400).send(error)
   }
 })
 
