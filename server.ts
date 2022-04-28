@@ -42,7 +42,6 @@ app.get("/pastes", async (req, res) => {
   } catch (error) {
     console.log(error)
   }
-
 });
 
 app.get<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
@@ -137,6 +136,14 @@ app.delete<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
     }
   } catch (error) {
     res.status(400).send(error)
+  }
+})
+
+app.get("/pastes/:pasteId/comments", (req,res) => {
+  try {
+    
+  } catch (error) {
+    
   }
 })
 
