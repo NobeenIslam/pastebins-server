@@ -114,10 +114,11 @@ app.put<{ id: string }, {}, pasteInterface>("/pastes/:id", async (req, res) => {
   }
 })
 
+//delete paste
 app.delete<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
   const id = parseInt(req.params.id)
   try {
-    const query = `DELETE FROM pastebins WHERE id = $1 RETURNING *`
+    const query = 'DELETE FROM pastebins WHERE id = $1 RETURNING *'
     const deleteRes = await client.query(query, [id])
     const didRemove = deleteRes.rowCount === 1;
 
@@ -139,8 +140,10 @@ app.delete<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
   }
 })
 
+//get comment
 app.get<{id: string}>("/pastes/:id/comments", async (req,res) => {
   const id = parseInt(req.params.id)
+
   try {
     const query = 'SELECT * FROM comments WHERE paste_id= $1'
     const queryRes = await client.query(query, [id])
@@ -150,6 +153,33 @@ app.get<{id: string}>("/pastes/:id/comments", async (req,res) => {
   } catch (error) {
     res.status(400).send(error)
   }
+})
+
+//delete comment
+app.delete<{commentId: string}, {}, {}>("/pastes/comments/:commentId", async (req, res) => {
+  const commentId = parseInt(req.params.commentId)
+
+  try {
+    const query = 'DELETE FROM comments WHERE id= $1 RETURNING *'
+    const deleteRes = await client.query(query, [commentId])
+    const didRemove = deleteRes.rowCount === 1
+  
+  if (didRemove) {
+    res.status(200).json({
+      success: true,
+      deleted: deleteRes.rows
+    })
+  } else {
+    res.status(404).json({
+      status: false,
+      data: {
+        commentId: "Could not find a comment with that id",
+      },
+    });
+  }
+} catch (error) {
+  res.status(400).send(error)
+}
 })
 
 //Start the server on the given port
