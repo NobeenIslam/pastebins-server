@@ -140,6 +140,29 @@ app.delete<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
   }
 })
 
+//add comment
+app.post<{id: string}, {}, {comment: string}>("/pastes/:id/comments", async (req,res) => {
+  const id = parseInt(req.params.id)
+  let {comment} = req.body
+
+  try {
+    const query = 'INSERT INTO comments (paste_id, comment) VALUES ($1, $2) RETURNING *'
+
+    if (comment === "" || comment === null){
+      res.status(404).send("No content in comment")
+    } else {
+      const queryRes = await client.query(query, [id, comment])
+      res.status(200).json({
+        status: "success",
+        data: queryRes.rows
+      })
+    }
+  }
+  catch (error){
+    res.status(400).send(error)
+  }
+})
+
 //get comment
 app.get<{id: string}>("/pastes/:id/comments", async (req,res) => {
   const id = parseInt(req.params.id)
