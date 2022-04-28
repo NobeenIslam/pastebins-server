@@ -136,7 +136,7 @@ app.delete<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
       });
     }
   } catch (error) {
-    res.status(400).send(error)
+    res.status(400).send("error catch activated")
   }
 })
 
@@ -156,12 +156,12 @@ app.get<{id: string}>("/pastes/:id/comments", async (req,res) => {
 })
 
 //delete comment
-app.delete<{commentId: string}, {}, {}>("/pastes/comments/:commentId", async (req, res) => {
-  const commentId = parseInt(req.params.commentId)
+app.delete<{id: string}, {}, {}>("/pastes/comments/:id", async (req, res) => {
+  const id = parseInt(req.params.id)
 
   try {
     const query = 'DELETE FROM comments WHERE id= $1 RETURNING *'
-    const deleteRes = await client.query(query, [commentId])
+    const deleteRes = await client.query(query, [id])
     const didRemove = deleteRes.rowCount === 1
   
   if (didRemove) {
@@ -173,7 +173,7 @@ app.delete<{commentId: string}, {}, {}>("/pastes/comments/:commentId", async (re
     res.status(404).json({
       status: false,
       data: {
-        commentId: "Could not find a comment with that id",
+        id: "Could not find a comment with that id",
       },
     });
   }
