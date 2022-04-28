@@ -30,7 +30,7 @@ const client = new Client(dbConfig);
 client.connect();
 
 app.get("/", async (req, res) => {
-  const pathToFile = filePath("../public/index.html");
+  const pathToFile = filePath("./public/index.html");
   res.sendFile(pathToFile);
   //res.status(200).send("This is the home page")
 });
@@ -65,7 +65,7 @@ app.post<{}, {}, pasteInterface>("/pastes", async (req, res) => {
     if (title === "") {
       title = null
     }
-    const postquery = `INSERT INTO pastebins (title, text) VALUES ($1, $2) RETURNING *`
+     const postquery = `INSERT INTO pastebins (title, text) VALUES ($1, $2) RETURNING *`
     const postedQuery = await client.query(postquery, [title, text])
     res.status(200).json(
       {
