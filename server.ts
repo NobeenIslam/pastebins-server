@@ -118,11 +118,12 @@ app.put<{ id: string }, {}, pasteInterface>("/pastes/:id", async (req, res) => {
 app.delete<{ id: string }, {}, {}>("/pastes/:id", async (req, res) => {
   const id = parseInt(req.params.id)
   try {
+    const commentRes = await client.query(`DELETE FROM comments WHERE paste_id = $1`, [id])
     const query = 'DELETE FROM pastebins WHERE id = $1 RETURNING *'
     const deleteRes = await client.query(query, [id])
     const didRemove = deleteRes.rowCount === 1;
 
-    const commentRes = await client.query(`DELETE FROM comments WHERE paste_id = $1`, [id])
+
 
     if (didRemove) {
       res.status(200).json({
