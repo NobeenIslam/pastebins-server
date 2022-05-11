@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <title>Pastebins Server</title>
+</head>
+
+<body>
+    <header>
+        <h1>My server API</h1>
+        <h2>RESTful JSON API</h2>
+    </header>
+    <main>
+        <section>
+            <h3>Retrieve all pastes</h3>
+            <p><code>GET /pastes</code></p>
+        </section>
+        <section>
+            <h3>Create a item</h3>
+            <p><code>POST /pastes</code></p>
+        </section>
+        <section>
+            <h3>Retrieve a specific item</h3>
+            <p><code>GET /pastes/{id}</code></p>
+        </section>
+        <section>
+            <h3>Update a specific item</h3>
+            <p><code>PATCH /pastes/{id}</code></p>
+            <p>Attaching a JSON body with the possible below fields:</p>
+            <ul>
+                <li><code>pastes</code> (string)</li>
+            </ul>
+        </section>
+        <section>
+            <h3>Delete a specific paste</h3>
+            <p><code>DELETE /pastes/{id}</code></p>
+        </section>
+    </main>
+</body>
+
+</html>
